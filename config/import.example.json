@@ -1,0 +1,17 @@
+{
+  "encoding": "utf-8-sig",
+  "delimiter": ",",
+  "date_format": "%Y-%m-%d",
+  "decimal_separator": ".",
+  "default_currency": "PLN",
+  "invert_amount_sign": false,
+  "id_prefix": "",
+  "columns": {
+    "transaction_date": "Date",
+    "amount": "Amount",
+    "currency": "Currency",
+    "counterparty": "Merchant",
+    "description": "Description",
+    "transaction_id": "ID"
+  }
+}

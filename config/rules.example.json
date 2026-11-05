@@ -1,0 +1,10 @@
+{
+  "rules": [
+    { "tag": "groceries", "pattern": "\\b(grocery|groceries|supermarket)\\b" },
+    { "tag": "restaurant_fast_food", "pattern": "\\b(restaurant|cafe|coffee)\\b" },
+    { "tag": "public_transport", "pattern": "\\b(transit|train|bus ticket)\\b" },
+    { "tag": "rent_payment", "pattern": "\\b(rent|housing)\\b" },
+    { "tag": "income_incoming", "pattern": "\\b(salary|payroll)\\b" },
+    { "tag": "software_ai_dev", "pattern": "\\b(software subscription)\\b" }
+  ]
+}
