@@ -76,6 +76,7 @@ def main() -> int:
                     for row in extracted:
                         row['transaction_date'] = normalize_date(row['transaction_date'])
                         row['amount'] = str(parse_amount(row['amount']))
+                        row['currency'] = (row.get('currency') or 'PLN').upper()
                         row['tags'] = json.dumps(classify(row, compiled), ensure_ascii=False)
                     rows.extend(extracted)
                 rows.sort(key=lambda row: row['transaction_date'])

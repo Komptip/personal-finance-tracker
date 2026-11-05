@@ -54,7 +54,7 @@ npm run dev -- --port 3001
 
 The default active dataset is `data/processed/tagged_transactions.csv`. To use another local file, copy `.env.example` to `.env` and set `NUXT_DATA_FILE` (absolute or relative to the repository root). Restart the server after changing `.env`; reload the browser after replacing data.
 
-For older checkouts with `tagged_transactions.csv` at the repository root, either set `NUXT_DATA_FILE=tagged_transactions.csv` in `.env`, or copy it into the default processed-data location. Do not regenerate a demo over it. Setup respects an existing default/custom file and does not generate a demo for a missing custom path.
+For older checkouts with `tagged_transactions.csv` at the repository root, either set `NUXT_DATA_FILE=tagged_transactions.csv` in `.env`, or copy it into the default processed-data location. Do not regenerate a demo over it. For compatibility, blank currency cells in legacy datasets are interpreted as PLN in memory; the CSV is not modified. Nonempty currency values must be three-letter codes. Setup respects an existing default/custom file and does not generate a demo for a missing custom path.
 
 Keep original exports separately. Imports validate the complete input before replacing the active output, but an explicit successful `--replace` replaces the dataset rather than appending.
 

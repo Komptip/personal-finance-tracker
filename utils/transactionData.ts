@@ -15,7 +15,8 @@ export function parseTransactionRows(rows: Record<string, string>[], fields: str
     if (!/^[+-]?\d+(?:\.\d{1,2})?$/.test(row.amount || '')) throw new Error('Invalid amount')
     const amount = Number(row.amount)
     if (!Number.isFinite(amount) || Math.abs(amount) > 1e12) throw new Error('Invalid amount')
-    const currency = (row.currency || '').toUpperCase()
+    // Legacy datasets omitted currency and were analyzed in PLN.
+    const currency = (row.currency?.trim() || 'PLN').toUpperCase()
     if (!/^[A-Z]{3}$/.test(currency)) throw new Error('Invalid currency')
     const tags: unknown = row.tags ? JSON.parse(row.tags) : []
     if (!Array.isArray(tags) || !tags.every((tag) => typeof tag === 'string')) {

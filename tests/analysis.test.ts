@@ -79,3 +79,16 @@ test('the API omits legacy account, card and raw-row fields', () => {
   assert.equal(JSON.stringify(result).includes('PRIVATE'), false)
   assert.equal(result.meta.count, 1)
 })
+
+test('legacy blank currencies retain the PLN default without changing source data', () => {
+  const legacy = { transaction_date: '2026-01-01', amount: '-1.00', currency: '' }
+  const result = parseTransactionRows([legacy], ['transaction_date', 'amount', 'currency'])
+  assert.equal(result.transactions[0].currency, 'PLN')
+  assert.equal(legacy.currency, '')
+  assert.throws(() =>
+    parseTransactionRows(
+      [{ ...legacy, currency: 'invalid' }],
+      ['transaction_date', 'amount', 'currency'],
+    ),
+  )
+})

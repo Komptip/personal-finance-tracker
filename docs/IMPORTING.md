@@ -106,7 +106,7 @@ Install the optional dependency as described in SETUP.md, then:
   --output data/processed/pdf-candidate.csv
 ```
 
-The adapter recognizes a limited Polish statement layout with day-month-year dates and decimal-comma amounts. It does not OCR scanned pages, and it cannot certify completeness. A PDF can yield some rows while omitting others; compare every statement's counts and totals before activation. Unsupported/empty PDFs fail. Prefer CSV whenever available. PDF imports do not deduplicate overlapping statements.
+The adapter recognizes a limited Polish statement layout with day-month-year dates and decimal-comma amounts. It does not OCR scanned pages, and it cannot certify completeness. A PDF can yield some rows while omitting others; compare every statement's counts and totals before activation. Unsupported/empty PDFs fail. Prefer CSV whenever available. PDF imports do not deduplicate overlapping statements. When this Polish adapter finds no currency label, it uses PLN; verify the statement currency before activation.
 
 ## Replacing or regenerating the demo
 
