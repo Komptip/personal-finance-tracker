@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
-  <title id="title">Fin stats — your money, clearly</title>
-  <desc id="desc">Decorative dashboard illustration with fictional chart bars. Local finance analysis, PLN first.</desc>
+  <title id="title">Personal Finance Tracker — local transaction analysis</title>
+  <desc id="desc">Illustrative transaction chart using synthetic data. Local financial analysis with PLN as the default currency.</desc>
   <rect width="1200" height="360" rx="24" fill="#102e36"/>
   <circle cx="1160" cy="30" r="250" fill="#16434a"/>
   <circle cx="1160" cy="30" r="160" fill="none" stroke="#2c5c5d"/>
   <text x="64" y="79" font-family="Arial,sans-serif" font-size="15" letter-spacing="3" fill="#8bd2bd">PERSONAL FINANCE TRACKER</text>
-  <text x="60" y="161" font-family="Arial,sans-serif" font-size="70" font-weight="700" fill="#ffffff">Your money,</text>
-  <text x="60" y="236" font-family="Arial,sans-serif" font-size="70" font-weight="700" fill="#8bd2bd">clearly.</text>
-  <text x="64" y="301" font-family="Arial,sans-serif" font-size="18" fill="#d1e5e2">Local data. Useful insights. PLN first.</text>
+  <text x="60" y="161" font-family="Arial,sans-serif" font-size="70" font-weight="700" fill="#ffffff">Financial</text>
+  <text x="60" y="236" font-family="Arial,sans-serif" font-size="70" font-weight="700" fill="#8bd2bd">analysis</text>
+  <text x="64" y="301" font-family="Arial,sans-serif" font-size="18" fill="#d1e5e2">Local processing · PLN default currency</text>
   <rect x="710" y="70" width="415" height="225" rx="18" fill="#f5f8f5"/>
-  <text x="738" y="105" font-family="Arial,sans-serif" font-size="13" letter-spacing="2" fill="#4a686b">A CLEARER PICTURE</text>
+  <text x="738" y="105" font-family="Arial,sans-serif" font-size="13" letter-spacing="2" fill="#4a686b">TRANSACTION ANALYSIS</text>
   <path d="M740 255H1095" stroke="#d7e2dc"/>
   <g fill="#167d6b">
     <rect x="748" y="201" width="35" height="54" rx="5"/>

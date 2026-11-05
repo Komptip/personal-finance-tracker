@@ -1,6 +1,6 @@
-# Importing bank exports
+# Bank export import specification
 
-## Supported paths
+## Supported input formats
 
 | Input                             | Support                                                                        |
 | --------------------------------- | ------------------------------------------------------------------------------ |
@@ -9,15 +9,15 @@
 | Polish text-based statement PDF   | Experimental legacy adapter; layout-dependent and needs reconciliation         |
 | Scanned PDF, Excel, OFX/QFX/QIF   | Not directly supported; export CSV from the bank or add a tested local adapter |
 
-No live bank connection is used. Export files manually. The pipeline never asks for bank credentials.
+No live bank connection is used. Export files manually. The pipeline does not require bank credentials.
 
-## 1. Keep inputs private
+## 1. Configure input storage
 
 Place exports in `private/imports/`. Copy `config/import.example.json` to `private/import.json` and `config/rules.example.json` to `private/rules.json`. These directories are ignored by Git. Do not place real exports or screenshots under `public/`, `docs/`, `tests/` or `config/`.
 
-## 2. Map the headers
+## 2. Configure field mapping
 
-The default mapping expects this **fictional** CSV structure:
+The default mapping expects the following CSV structure. All example records are synthetic:
 
 ```csv
 Date,Amount,Currency,Merchant,Description,ID
@@ -25,7 +25,7 @@ Date,Amount,Currency,Merchant,Description,ID
 2026-01-25,100.00,PLN,DEMO Employer,Fictional salary,demo-b
 ```
 
-Edit `private/import.json` to match your bank. Keys under `columns` are application fields; values are exact CSV headers. Remove optional mappings whose headers are absent.
+Configure `private/import.json` for the bank export format. Keys under `columns` are application fields; values are exact CSV headers. Remove optional mappings whose headers are absent.
 
 | Setting              | Meaning                                                                                   |
 | -------------------- | ----------------------------------------------------------------------------------------- |
@@ -39,7 +39,7 @@ Edit `private/import.json` to match your bank. Keys under `columns` are applicat
 
 Required fields: `transaction_date`, plus `amount` **or** both `debit` and `credit`. Currency must come from a mapped column or `default_currency`. Amounts support up to two decimal places; outgoing is negative and incoming is positive.
 
-Common optional fields: `transaction_id`, `counterparty`, `description`, `title`, `location`. Extra bank columns are ignored. The canonical output does not include dedicated account/card/raw-statement fields; descriptions may still contain sensitive material, so the output stays private.
+Optional fields include: `transaction_id`, `counterparty`, `description`, `title`, `location`. Extra bank columns are ignored. The canonical output does not include dedicated account/card/raw-statement fields; descriptions may still contain sensitive data, so the output must remain excluded from version control.
 
 For separate debit/credit columns, remove the `amount` mapping and add:
 
@@ -48,9 +48,9 @@ For separate debit/credit columns, remove the `amount` mapping and add:
 "credit": "Credit"
 ```
 
-Never guess ambiguous dates, transaction direction or currency. Inspect the bank's export settings or ask the owner.
+Resolve ambiguous dates, transaction direction and currency using the bank's export settings or information provided by the data owner.
 
-## 3. Add local rules
+## 3. Configure classification rules
 
 Rules are case-insensitive regular expressions matched against merchant, title, description and location. More than one tag may match. Unmatched transactions remain uncategorized.
 
@@ -63,9 +63,9 @@ Rules are case-insensitive regular expressions matched against merchant, title, 
 }
 ```
 
-The example rules are intentionally generic. Put your own merchants and transfer identifiers only in `private/rules.json`. Own-account transfer matches take precedence and are excluded from default totals. Cash withdrawals are not automatically assumed to be rent. No personal income, medical, donation, rent amount or account assumptions ship in source.
+The example rules are intentionally generic. Store personal merchant patterns and transfer identifiers only in `private/rules.json`. Own-account transfer matches take precedence and are excluded from default totals. Cash withdrawals are not automatically assumed to be rent. The default configuration contains no user-specific income, medical, donation, rent-amount or account assumptions.
 
-## 4. Validate a candidate
+## 4. Validate the candidate dataset
 
 ```bash
 python3 -m pipeline import \
@@ -75,13 +75,13 @@ python3 -m pipeline import \
   --output data/processed/candidate.csv
 ```
 
-A directory imports all `.csv` files directly inside it with the same mapping. Keep processed outputs outside the input directory. Validate counts, date range, currencies and signed totals against your exports. Inspect a few records locally, especially debit/credit signs and refund transactions.
+When the input is a directory, the importer processes all `.csv` files directly inside it using the same mapping. Keep processed outputs outside the input directory. Validate counts, date range, currencies and signed totals against your exports. Inspect a few records locally, especially debit/credit signs and refund transactions.
 
-Stable, identical transaction IDs are deduplicated within one import. Conflicting IDs fail instead of silently dropping a record. Without bank IDs, identical purchases are kept; overlapping exports can therefore double-count. Avoid overlaps or reconcile manually. Imports rebuild a dataset from the specified input set; they do not merge with the previous output.
+Stable, identical transaction IDs are deduplicated within one import. Conflicting IDs cause the import to fail. Without bank IDs, identical purchases are retained; overlapping exports may therefore produce duplicate records. Avoid overlaps or reconcile manually. Imports rebuild a dataset from the specified input set; they do not merge with the previous output.
 
-Files requiring different mappings should be normalized separately into the canonical schema and reconciled before combining. The CLI does not automatically combine different bank formats. Ask your assistant to implement a synthetic-tested adapter if needed.
+Files requiring different mappings should be normalized separately into the canonical schema and reconciled before combining. The CLI does not automatically combine different bank formats. Additional adapters must include tests using synthetic data.
 
-## 5. Activate the dataset
+## 5. Replace the active dataset
 
 After reviewing the candidate and authorizing replacement:
 
@@ -93,9 +93,9 @@ python3 -m pipeline import \
   --replace
 ```
 
-The importer validates all rows before an atomic output replacement. Failed imports leave existing output alone. Refresh the dashboard to load it. PLN stays the default. The display-currency selector converts the current selection to PLN, EUR, USD or UAH with dated NBP average rates. Mixed-currency datasets also have a separate source-currency selector; original currencies and amounts stay unchanged.
+The importer validates all rows before an atomic output replacement. Failed imports preserve the existing output. Refresh the dashboard to load it. PLN remains the default currency. The display-currency selector converts the current selection to PLN, EUR, USD or UAH with dated NBP average rates. Mixed-currency datasets also have a separate source-currency selector; original currencies and amounts stay unchanged.
 
-## Experimental PDFs
+## Experimental PDF import
 
 Install the optional dependency as described in SETUP.md, then:
 
@@ -106,8 +106,8 @@ Install the optional dependency as described in SETUP.md, then:
   --output data/processed/pdf-candidate.csv
 ```
 
-The adapter recognizes a limited Polish statement layout with day-month-year dates and decimal-comma amounts. It does not OCR scanned pages, and it cannot certify completeness. A PDF can yield some rows while omitting others; compare every statement's counts and totals before activation. Unsupported/empty PDFs fail. Prefer CSV whenever available. PDF imports do not deduplicate overlapping statements. When this Polish adapter finds no currency label, it uses PLN; verify the statement currency before activation.
+The adapter recognizes a limited Polish statement layout with day-month-year dates and decimal-comma amounts. It does not OCR scanned pages, and it cannot certify completeness. A PDF can yield some rows while omitting others; compare every statement's counts and totals before activation. Unsupported or empty PDFs cause the import to fail. Prefer CSV whenever available. PDF imports do not deduplicate overlapping statements. When this Polish adapter finds no currency label, it uses PLN; verify the statement currency before activation.
 
-## Replacing or regenerating the demo
+## Demo dataset management
 
-`python3 -m pipeline demo --if-missing` never replaces an existing file. To intentionally discard the current active dataset and return to fictional data, first back up your dataset, then use `python3 -m pipeline demo --replace`.
+`python3 -m pipeline demo --if-missing` never replaces an existing file. To intentionally discard the current active dataset and restore the synthetic demo, first back up your dataset, then use `python3 -m pipeline demo --replace`.
