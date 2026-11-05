@@ -93,7 +93,7 @@ python3 -m pipeline import \
   --replace
 ```
 
-The importer validates all rows before an atomic output replacement. Failed imports leave existing output alone. Refresh the dashboard to load it. PLN stays the default, and the currency selector analyzes other currencies separately; no automatic exchange conversion is performed.
+The importer validates all rows before an atomic output replacement. Failed imports leave existing output alone. Refresh the dashboard to load it. PLN stays the default. The display-currency selector converts the current selection to PLN, EUR, USD or UAH with dated NBP average rates. Mixed-currency datasets also have a separate source-currency selector; original currencies and amounts stay unchanged.
 
 ## Experimental PDFs
 

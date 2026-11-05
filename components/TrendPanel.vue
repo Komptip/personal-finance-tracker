@@ -11,7 +11,8 @@ import { Bar } from 'vue-chartjs'
 import { primaryCategory } from '~/utils/categoryRanking'
 import { periods, label, valueCents } from '~/utils/analysis'
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip)
-const { matching, scope, grouping, setRange, money, resetVersion } = useAnalysis()
+const { matching, scope, displayCurrency, displayValue, grouping, setRange, money, resetVersion } =
+  useAnalysis()
 const stacked = ref(false)
 watch(resetVersion, () => {
   stacked.value = false
@@ -87,8 +88,12 @@ const options = computed<ChartOptions<'bar'>>(() => ({
       ticks: {
         maxTicksLimit: 5,
         color: '#637582',
-        callback: (value) =>
-          new Intl.NumberFormat('en', { notation: 'compact' }).format(Number(value)),
+        callback: (value) => {
+          const converted = displayValue(Number(value))
+          return converted === null
+            ? '—'
+            : new Intl.NumberFormat('en', { notation: 'compact' }).format(converted)
+        },
       },
     },
   },
@@ -116,7 +121,7 @@ const options = computed<ChartOptions<'bar'>>(() => ({
       </select>
     </div>
     <div class="chart-toolbar">
-      <span class="helper">{{ scope.currency }} · select a bar to inspect</span
+      <span class="helper">{{ displayCurrency }} · select a bar to inspect</span
       ><label class="check-row"
         ><input v-model="stacked" type="checkbox" />Category breakdown</label
       >

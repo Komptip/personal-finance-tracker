@@ -42,12 +42,12 @@ Open **[localhost:3000](http://localhost:3000)**. Setup is safe to rerun: it kee
 
 ## What you can explore
 
-| View                   | What it does                                                                                 |
-| ---------------------- | -------------------------------------------------------------------------------------------- |
-| **Overview**           | Spending, incoming funds, net flow, trends, ranked categories and recent transactions        |
-| **Transactions**       | Search descriptions and merchants, filter dates and tags, inspect original details           |
-| **Review**             | Trace observations back to transactions and inspect uncertain or uncategorized labels        |
-| **Currency selection** | PLN is the default; other currencies are analyzed separately, without guessed exchange rates |
+| View                   | What it does                                                                               |
+| ---------------------- | ------------------------------------------------------------------------------------------ |
+| **Overview**           | Spending, incoming funds, net flow, trends, ranked categories and recent transactions      |
+| **Transactions**       | Search descriptions and merchants, filter dates and tags, inspect original details         |
+| **Review**             | Trace observations back to transactions and inspect uncertain or uncategorized labels      |
+| **Currency selection** | PLN is the default; switch display totals to EUR, USD or UAH using dated NBP average rates |
 
 Own-account transfers are excluded from totals by default when tagged. Category matches are configurable suggestions, not verified facts. This is an analysis tool, not bank synchronization or accounting software.
 

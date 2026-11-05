@@ -70,16 +70,22 @@ This installs pdfplumber only for the experimental text-PDF path. The default de
 
 ## Troubleshooting
 
-| Symptom                             | Action                                                                                                                                        |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Unsupported Node version            | Run `nvm use`, then rerun setup. Do not mix Windows Node with WSL node_modules.                                                               |
-| `python3` missing                   | Install Python in the same OS/WSL environment as the checkout.                                                                                |
-| Missing history                     | Check `NUXT_DATA_FILE`, import data or generate the demo. A missing file produces an empty state.                                             |
-| Import refuses to overwrite         | Review the candidate output, then explicitly pass `--replace` if intended.                                                                    |
-| Invalid transaction data / HTTP 422 | Check mapped date, amount, currency and JSON tags. Invalid rows are not silently counted as zero.                                             |
-| Empty PLN selection                 | Choose a currency present in your export. Amounts are never converted automatically.                                                          |
-| Port already used                   | Choose a free port and use the actual URL printed by Nuxt.                                                                                    |
-| Windows cannot reach WSL localhost  | First check `curl -I http://127.0.0.1:3000` inside WSL; inspect WSL forwarding/firewall settings without exposing the financial app publicly. |
+| Symptom                             | Action                                                                                                                                                       |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Unsupported Node version            | Run `nvm use`, then rerun setup. Do not mix Windows Node with WSL node_modules.                                                                              |
+| `python3` missing                   | Install Python in the same OS/WSL environment as the checkout.                                                                                               |
+| Missing history                     | Check `NUXT_DATA_FILE`, import data or generate the demo. A missing file produces an empty state.                                                            |
+| Import refuses to overwrite         | Review the candidate output, then explicitly pass `--replace` if intended.                                                                                   |
+| Invalid transaction data / HTTP 422 | Check mapped date, amount, currency and JSON tags. Invalid rows are not silently counted as zero.                                                            |
+| Empty PLN selection                 | Choose a currency present in your export. Use the display-currency selector for conversion. The separate source selector appears for mixed-currency imports. |
+| Port already used                   | Choose a free port and use the actual URL printed by Nuxt.                                                                                                   |
+| Windows cannot reach WSL localhost  | First check `curl -I http://127.0.0.1:3000` inside WSL; inspect WSL forwarding/firewall settings without exposing the financial app publicly.                |
+
+## Display currencies
+
+PLN is the default. The main currency selector converts totals, chart labels and transaction display amounts to EUR, USD or UAH using the latest available NBP average rates. The rate date and conversion basis are shown below the toolbar. Transaction details keep original amounts. Mixed-currency imports have a separate **Transactions in** selector so unlike source currencies are never added together.
+
+Rates are fetched server-side from a fixed public NBP endpoint and cached for one hour. No transaction data is sent. Conversion is a display estimate, not a historic transaction valuation or the exchange rate charged by your bank. If rates cannot be loaded, same-currency views still work and unavailable conversions show a dash with a retry action. A previously fetched rate can be reused, visibly marked as stale.
 
 ## Verification
 

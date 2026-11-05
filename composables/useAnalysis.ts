@@ -1,3 +1,4 @@
+import { convertCurrency, type ExchangeRates } from '~/utils/currency'
 import type { TransactionData } from '~/utils/transactionData'
 import {
   filterScope,
@@ -23,6 +24,28 @@ export function useAnalysis() {
     tags: [],
     transfers: false,
   }))
+  const displayCurrency = useState('finance-display-currency', () => 'PLN')
+  const exchangeRates = useState<ExchangeRates | null>('finance-exchange-rates', () => null)
+  const exchangeStatus = useState<'idle' | 'pending' | 'success' | 'error'>(
+    'finance-exchange-status',
+    () => 'idle',
+  )
+  const displayCurrencies = computed(() => [
+    ...new Set(['PLN', 'EUR', 'USD', 'UAH', ...currencies.value]),
+  ])
+  async function loadExchangeRates() {
+    if (exchangeStatus.value === 'pending') return
+    exchangeStatus.value = 'pending'
+    try {
+      exchangeRates.value = await $fetch<ExchangeRates>('/api/exchange-rates')
+      exchangeStatus.value = 'success'
+    } catch {
+      exchangeStatus.value = 'error'
+    }
+  }
+  function displayValue(value: number, target = displayCurrency.value) {
+    return convertCurrency(value, scope.value.currency, target, exchangeRates.value)
+  }
   const previous = useState<{ start: string; end: string } | null>('finance-previous', () => null)
   const grouping = useState<Grouping>('finance-grouping', () => 'month')
   const rank = useState<'desc' | 'asc'>('finance-ranking', () => 'desc')
@@ -101,13 +124,15 @@ export function useAnalysis() {
     ledger.value = { search: '', sort: 'newest', page: 1, label: '' }
     resetVersion.value++
   }
-  function money(value: number, currency = scope.value.currency) {
+  function money(value: number, currency = displayCurrency.value) {
+    const converted = displayValue(value, currency)
+    if (converted === null) return '—'
     return new Intl.NumberFormat('en-GB', {
       style: 'currency',
       currency,
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(value)
+    }).format(converted)
   }
   function originalMoney(t: Transaction) {
     return new Intl.NumberFormat('en-GB', {
@@ -127,6 +152,12 @@ export function useAnalysis() {
     scope,
     rows,
     currencies,
+    displayCurrency,
+    displayCurrencies,
+    displayValue,
+    exchangeRates,
+    exchangeStatus,
+    loadExchangeRates,
     min,
     max,
     matching,

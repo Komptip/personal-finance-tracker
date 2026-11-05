@@ -13,6 +13,12 @@ const {
   scope,
   rows,
   currencies,
+  displayCurrency,
+  displayCurrencies,
+  exchangeRates,
+  exchangeStatus,
+  loadExchangeRates,
+  displayValue,
   min,
   max,
   partial,
@@ -142,9 +148,15 @@ function toggleGroup(group: string[], checked: boolean) {
         </select>
       </div>
       <div class="currency-control">
-        <label class="sr-only" for="currency">Transaction currency</label
-        ><select id="currency" v-model="scope.currency">
-          <option v-for="c in currencies.length ? currencies : ['PLN']" :key="c">{{ c }}</option>
+        <label class="sr-only" for="currency">Display currency</label
+        ><select id="currency" v-model="displayCurrency">
+          <option v-for="c in displayCurrencies" :key="c">{{ c }}</option>
+        </select>
+      </div>
+      <div v-if="currencies.length > 1" class="currency-control">
+        <label for="source-currency">Transactions in</label>
+        <select id="source-currency" v-model="scope.currency">
+          <option v-for="c in currencies" :key="c">{{ c }}</option>
         </select>
       </div>
       <button class="filter-button" @click="openFilters">
@@ -200,9 +212,27 @@ function toggleGroup(group: string[], checked: boolean) {
       First available month is partial · coverage starts {{ dateLabel(min) }}.
     </p>
     <p v-if="currencies.length > 1" class="helper">
-      Showing {{ scope.currency }} transactions only. Currencies are analyzed separately; amounts
-      are not converted.
+      Showing transactions recorded in {{ scope.currency }}. Original currencies are kept separate.
     </p>
+    <div v-if="displayCurrency !== scope.currency" class="conversion" aria-live="polite">
+      <p v-if="displayValue(1) !== null && exchangeRates">
+        Display conversion: 1 {{ scope.currency }} ≈ {{ displayValue(1)?.toFixed(4) }}
+        {{ displayCurrency }}.
+        <a href="https://api.nbp.pl/en.html" target="_blank" rel="noopener noreferrer"
+          >NBP average rates</a
+        >, {{ exchangeRates.effectiveDate }}. These are display estimates using the latest available
+        rates, not historical transaction rates or bank fees.
+        <span v-if="exchangeRates.stale"
+          >The last fetched rates are being used because the latest update failed.</span
+        >
+      </p>
+      <p v-else-if="exchangeStatus === 'pending'">Loading exchange rates…</p>
+      <p v-else>
+        Conversion is unavailable for this currency right now. Original amounts remain in
+        transaction details.
+        <button class="text-button" @click="loadExchangeRates">Retry rates</button>
+      </p>
+    </div>
     <div v-if="active || previous" class="chips">
       <button v-if="previous" class="chip" @click="back">
         <ArrowLeft :size="14" /> Back to {{ dateLabel(previous.start) }} –

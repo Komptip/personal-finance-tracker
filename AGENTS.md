@@ -9,7 +9,7 @@ This is a local Nuxt finance dashboard with a Python bank-export pipeline. Compl
 - Do not read or copy another checkout's private data, even on the same PC. Each clone starts with its own demo or empty state.
 - Do not upload bank exports to external APIs, issue trackers or other services. For cloud AI assistance, ask the owner to supply synthetic rows/header names or explicitly approve reading private material in the assistant session. The application itself needs no AI access.
 - Any individual-specific category/own-account rules belong in `private/rules.json`, never `config/rules.example.json`.
-- PLN remains the default analysis currency. Filter currencies separately; never sum unlike currencies or restore guessed conversion rates.
+- PLN remains the default analysis and display currency. Keep source-currency filtering separate from display conversion. Use the public NBP rates with their effective date for PLN/EUR/USD/UAH display; never sum unlike source currencies or invent rates.
 - Bind to loopback. There is no authentication. Do not publish or tunnel the app with real data.
 
 ## Setup task

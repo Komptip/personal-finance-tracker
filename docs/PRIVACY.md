@@ -27,7 +27,7 @@ This is a heuristic, not proof of anonymity: it cannot recognize every name, mer
 - The app reads a server-side local file and serves it to the local browser. Export paths are not client-configurable query parameters.
 - The API sends `Cache-Control: no-store` and excludes unused dedicated account/card/raw-row columns. Descriptions and merchant details are still private data.
 - Servers bind to loopback by default. There is no authentication or encryption at rest. Other local users/processes with file access can read data.
-- Dependencies are installed from package registries during setup; runtime import/analysis does not upload transactions. Nuxt telemetry is disabled.
+- Dependencies are installed from package registries during setup; runtime import/analysis does not upload transactions. Display conversion fetches a public exchange-rate table from api.nbp.pl; this fixed request contains no transactions, identifiers or local paths. Nuxt telemetry is disabled.
 - A cloud AI assistant is a separate service. Use fictional samples/header names, or consciously authorize access to private material; no app setting changes the assistant provider's data handling.
 - Builds and screenshots should be verified with the synthetic demo. Never publish a deployment artifact containing a real dataset or server-rendered private page.
 

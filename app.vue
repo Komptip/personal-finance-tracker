@@ -8,7 +8,7 @@ import {
 } from 'lucide-vue-next'
 import { dateLabel } from '~/utils/analysis'
 import '~/assets/css/main.css'
-const { data, min, max, load, scope, ledger } = useAnalysis()
+const { data, min, max, load, loadExchangeRates, scope, ledger } = useAnalysis()
 watch(
   () => JSON.stringify(scope.value),
   () => {
@@ -16,6 +16,9 @@ watch(
   },
 )
 await callOnce('load-finance', load)
+onMounted(() => {
+  void loadExchangeRates()
+})
 const route = useRoute()
 const navigation = [
   { to: '/', name: 'Overview', icon: LayoutDashboard },
